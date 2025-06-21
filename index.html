@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Хрестики-Нулики</title>
+  <style>
+    body {
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+    }
+
+    .cell {
+      background: white;
+      border: 2px solid #ccc;
+      font-size: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .cell:hover {
+      background: #e8f0fe;
+    }
+
+    .x::before, .x::after, .o {
+      animation: pop 0.3s ease-in-out;
+    }
+
+    .x::before, .x::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 8px;
+      background: #0074D9;
+      top: 46px;
+      left: 20px;
+      border-radius: 4px;
+    }
+
+    .x::before {
+      transform: rotate(45deg);
+    }
+
+    .x::after {
+      transform: rotate(-45deg);
+    }
+
+    .o {
+      width: 60px;
+      height: 60px;
+      border: 8px solid #FF4136;
+      border-radius: 50%;
+      box-sizing: border-box;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .status {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div>
+  <div class="board" id="board"></div>
+  <div class="status" id="status">Хід: X</div>
+  <div style="text-align:center">
+    <button onclick="resetGame()">Почати спочатку</button>
+  </div>
+</div>
+
+<script>
+  const board = document.getElementById("board");
+  const statusDiv = document.getElementById("status");
+  let currentPlayer = "x";
+  let gameActive = true;
+  let cells = [];
+
+  function createBoard() {
+    board.innerHTML = "";
+    cells = [];
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.index = i;
+      cell.addEventListener("click", handleClick);
+      board.appendChild(cell);
+      cells.push("");
+    }
+  }
+
+  function handleClick(e) {
+    const cell = e.target;
+    const index = cell.dataset.index;
+
+    if (!gameActive || cells[index] !== "") return;
+
+    cells[index] = currentPlayer;
+    cell.classList.add(currentPlayer === "x" ? "x" : "o");
+
+    if (checkWinner()) {
+      statusDiv.textContent = `Переможець: ${currentPlayer.toUpperCase()}!`;
+      gameActive = false;
+      return;
+    }
+
+    if (!cells.includes("")) {
+      statusDiv.textContent = "Нічия!";
+      gameActive = false;
+      return;
+    }
+
+    currentPlayer = currentPlayer === "x" ? "o" : "x";
+    statusDiv.textContent = `Хід: ${currentPlayer.toUpperCase()}`;
+  }
+
+  function checkWinner() {
+    const wins = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    return wins.some(combo => {
+      const [a,b,c] = combo;
+      return cells[a] && cells[a] === cells[b] && cells[a] === cells[c];
+    });
+  }
+
+  function resetGame() {
+    currentPlayer = "x";
+    gameActive = true;
+    statusDiv.textContent = "Хід: X";
+    createBoard();
+  }
+
+  createBoard();
+</script>
+
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Хрестики-Нулики</title>
+  <title>Tic Tac Toe</title>
   <style>
     body {
       background: #f0f4f8;
@@ -91,9 +91,9 @@
 
 <div>
   <div class="board" id="board"></div>
-  <div class="status" id="status">Хід: X</div>
+  <div class="status" id="status">Kurs: X</div>
   <div style="text-align:center">
-    <button onclick="resetGame()">Почати спочатку</button>
+    <button onclick="resetGame()">Neu beginnen</button>
   </div>
 </div>
 
@@ -128,19 +128,19 @@
     cell.classList.add(currentPlayer === "x" ? "x" : "o");
 
     if (checkWinner()) {
-      statusDiv.textContent = `Переможець: ${currentPlayer.toUpperCase()}!`;
+      statusDiv.textContent = `Gewinner: ${currentPlayer.toUpperCase()}!`;
       gameActive = false;
       return;
     }
 
     if (!cells.includes("")) {
-      statusDiv.textContent = "Нічия!";
+      statusDiv.textContent = "Ziehen!";
       gameActive = false;
       return;
     }
 
     currentPlayer = currentPlayer === "x" ? "o" : "x";
-    statusDiv.textContent = `Хід: ${currentPlayer.toUpperCase()}`;
+    statusDiv.textContent = `Kurs: ${currentPlayer.toUpperCase()}`;
   }
 
   function checkWinner() {
@@ -159,7 +159,7 @@
   function resetGame() {
     currentPlayer = "x";
     gameActive = true;
-    statusDiv.textContent = "Хід: X";
+    statusDiv.textContent = "Kurs: X";
     createBoard();
   }
 
